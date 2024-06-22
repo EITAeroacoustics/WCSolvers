@@ -1,2 +1,2 @@
 # WCSolvers
-Weakly compressible solvers
+Weakly compressible solvers for OpenFOAM v2112
