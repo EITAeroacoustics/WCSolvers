@@ -1,0 +1,150 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.1                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+
+    	"p.*"
+    	{
+        	solver           PBiCGStab; // paralution_PCG// PCG
+        	preconditioner	 DIC;
+        	tolerance        1e-10;
+        	relTol           0.01;
+    	}
+
+    	"U.*"
+    	{
+        	solver           PBiCGStab; // paralution_PBiCG // PBiCG
+        	preconditioner	 DILU;
+        	tolerance        1e-10;
+        	relTol           0.01;
+    	}
+
+
+    	k
+    	{
+        	solver 		PBiCG;
+   		preconditioner	DILU;
+		tolerance	1e-08;
+		relTol		0.1;
+    	}
+    	kFinal
+    	{
+        	solver 		PBiCG;
+   		preconditioner	DILU;
+		tolerance	1e-08;
+		relTol		0;
+    	}
+
+    	epsilon
+    	{
+        	solver           PBiCG;
+        	preconditioner	 DILU;
+        	tolerance        1e-8;
+        	relTol           0;
+    	}
+
+    	omega
+    	{
+        	solver           PBiCG;
+        	preconditioner	 DILU;
+        	tolerance        1e-8;
+        	relTol           0;
+    	}
+
+    	B
+    	{
+        	solver 		PBiCG;
+   		preconditioner	DILU;
+		tolerance	1e-08;
+		relTol		0;
+    	}
+	
+    	nuTilda
+    	{
+        	solver           PBiCG;
+        	preconditioner	 DILU;
+        	tolerance        1e-8;
+        	relTol           0;
+    	}
+
+    	nuTildaFinal
+    	{
+        	solver           PBiCG;
+        	preconditioner	 DILU;
+        	tolerance        1e-8;
+        	relTol           0;
+    	}
+}
+
+PISO
+{
+    	nCorrectors			1;
+    	nNonOrthogonalCorrectors	2;
+        pRefCell    0;
+        pRefValue   0;
+}
+PIMPLE
+{
+    	nOuterCorrectors 		1;// Run in PISO mode
+    	nCorrectors     		2;
+    	nNonOrthogonalCorrectors 	0;
+        pRefCell    0;
+        pRefValue   0;
+}
+
+PSOURCE
+{
+	addPointSource		true;
+	sourceType		monopole; // supported: monopole, dipole and quadrupole
+	amplitude		100; 	// strength, related to the amplitude
+	frequency		500;
+	centre			(0.0 0.0 0.0); 
+	frequency		1000;
+	cc			0.05; // Ref: https://en.wikipedia.org/wiki/Gaussian_function, the non-zero constant c in the first equation.
+
+}
+BUFFERZONE
+{
+	applyBufferZone		true;
+	startTime		2e-4;  // should be later than the simulation startTime, otherwise it is set the same as the simulation startTime.
+	frequency		5000;  // Maximum damping coff alpha*frequency
+	alpha			6.0;   // Positive. Default from Richards, alpha = 1.0, beta = 3.0
+	beta			2.0;   // Optimised tuneable parameters alpha = 6.0, beta = 2.0
+	pRefField		pMean; // Optional	
+	URefField		UMean;
+
+	zoneType		box;
+	innerBoxMin		(-1.8 -1.8 -100);
+	innerBoxMax		( 1.8  1.8  100);
+	outerBoxMin		(-3.0 -3.0 -200);
+	outerBoxMax		( 3.0  3.0  200);
+	/*
+	zoneType		sphere;
+	innerRadius		1.5;
+	outerRadius		3.0;
+	centre			(0. 0. 0.);
+	*/
+	
+}
+
+
+cache
+{
+    grad(U);
+}
+
+// ************************************************************************* //
