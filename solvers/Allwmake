@@ -1,0 +1,10 @@
+#!/bin/sh
+
+wmake apac
+wmake apacSource
+wmake wcAero
+wmake wcAeroSource
+
+
+
+

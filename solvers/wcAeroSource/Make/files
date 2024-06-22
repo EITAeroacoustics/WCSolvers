@@ -1,0 +1,3 @@
+wcAeroSource.C
+
+EXE = $(FOAM_USER_APPBIN)/wcAeroSource

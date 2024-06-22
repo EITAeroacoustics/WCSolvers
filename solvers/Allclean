@@ -1,0 +1,10 @@
+#!/bin/sh
+wclean apac
+wclean apacSource
+wclean wcAero
+wclean wcAeroSource
+
+rm $(which apac)
+rm $(which apacSource)
+rm $(which wcAero)
+rm $(which wcAeroSource)
